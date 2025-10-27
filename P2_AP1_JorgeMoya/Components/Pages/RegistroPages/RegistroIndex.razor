@@ -1,7 +1,61 @@
 ﻿@page "/Registro/Index"
 
+<div class="container mt-3">
+    <div class="card shadow-lg">
+        <div class="card card-header">
+            <h5 class="card-title"> <strong> Consulta de Registros </strong></h5>
 
+            <div class="d-flex justify-content-end">
+                <a class="btn btn-primary bi bi-plus" href="/Registro/Create"> Crear Registro</a>
+            </div>
+        </div>
+
+        <div class="card-body">
+            <div class="row align-items-center">
+                <div class="col-12 col-md-6 mb-3">
+                    <label class="form-label"> <strong> Desde: </strong></label>
+                    <InputDate class="form-control" @bind-Value = "Desde"/>
+
+                    <div class="col-12 col-md-6 mb-3"> 
+                        <label class="form-label"> <strong> Desde: </strong></label>
+                        <InputDate class="form-control" @bind-Value="Hasta" />
+                    </div>
+                </div>
+            </div>
+
+            <div class="row align-items-center">
+                <div class="col-12 col-md-6 mb-3">
+
+                    <label class="form-label"> <strong> Buscar: </strong></label>
+                    <div class="input-group">
+
+                        <button type="button" class="btn btn-outline-info bi bi-search"> </button>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+</div>
 
 @code {
+    public DateTime? Desde { get; set; } = DateTime.Now;
+
+    public DateTime? Hasta { get; set; } = DateTime.Now;
+
+    public List<Registros> ListaRegistros = new List<Registros>();
+
+    public async Task Buscar ()
+    {
+        // var lista = ListaRegistros.listar(r => true);
+
+        // if (Desde.HasValue && Desde.HasValue)
+        // {
+        //     lista = lista.where(modelo.Fecha >= Desde && modelo.fecha <= Hasta);
+        // }
+
+        // ListaRegistros = lista;
+    }
 
 }
