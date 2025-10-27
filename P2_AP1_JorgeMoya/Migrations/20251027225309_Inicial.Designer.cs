@@ -10,7 +10,7 @@ using P2_AP1_JorgeMoya.DAL;
 namespace P2_AP1_JorgeMoya.Migrations
 {
     [DbContext(typeof(Contexto))]
-    [Migration("20251027224530_Inicial")]
+    [Migration("20251027225309_Inicial")]
     partial class Inicial
     {
         /// <inheritdoc />
