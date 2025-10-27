@@ -1,10 +1,15 @@
+using Microsoft.EntityFrameworkCore;
 using P2_AP1_JorgeMoya.Components;
+using P2_AP1_JorgeMoya.DAL;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
+
+var ConnectionString = builder.Configuration.GetConnectionString("ConStr");
+builder.Services.AddDbContextFactory<Contexto>(o => o.UseSqlite(ConnectionString));
 
 var app = builder.Build();
 
