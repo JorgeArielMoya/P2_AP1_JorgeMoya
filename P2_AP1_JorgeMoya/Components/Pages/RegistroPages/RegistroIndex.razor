@@ -3,10 +3,10 @@
 <div class="container mt-3">
     <div class="card shadow-lg">
         <div class="card card-header">
-            <h5 class="card-title"> <strong> Consulta de Registros </strong></h5>
+            <h5 class="card-title text-center"> <strong> Consulta de Registros </strong></h5>
 
             <div class="d-flex justify-content-end">
-                <a class="btn btn-primary bi bi-plus" href="/Registro/Create"> Crear Registro</a>
+                <a class="btn btn-primary bi bi-plus-circle" href="/Registro/Create"> Crear Registro</a>
             </div>
         </div>
 
@@ -15,18 +15,18 @@
                 <div class="col-12 col-md-6 mb-3">
                     <label class="form-label"> <strong> Desde: </strong></label>
                     <InputDate class="form-control" @bind-Value = "Desde"/>
+                </div>
 
-                    <div class="col-12 col-md-6 mb-3"> 
-                        <label class="form-label"> <strong> Desde: </strong></label>
-                        <InputDate class="form-control" @bind-Value="Hasta" />
-                    </div>
+                <div class="col-12 col-md-6 mb-3">
+                    <label class="form-label"> <strong> Hasta: </strong></label>
+                    <InputDate class="form-control" @bind-Value="Hasta" />
                 </div>
             </div>
 
             <div class="row align-items-center">
                 <div class="col-12 col-md-6 mb-3">
 
-                    <label class="form-label"> <strong> Buscar: </strong></label>
+                    <label class="form-label"> <strong> Busqueda: </strong></label>
                     <div class="input-group">
 
                         <button type="button" class="btn btn-outline-info bi bi-search"> </button>
