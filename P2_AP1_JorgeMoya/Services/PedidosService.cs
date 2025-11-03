@@ -5,12 +5,12 @@ using System.Linq.Expressions;
 
 namespace P2_AP1_JorgeMoya.Services;
 
-public class RegistroService (IDbContextFactory<Contexto> Dbfactory)
+public class PedidosService (IDbContextFactory<Contexto> Dbfactory)
 {
-    public async Task<List<Registros>> Listar (Expression<Func<Registros, bool>> criterio)
+    public async Task<List<Pedidos>> Listar (Expression<Func<Pedidos, bool>> criterio)
     {
         await using var contexto = await Dbfactory.CreateDbContextAsync();
-        return await contexto.Registros
+        return await contexto.Pedidos
             .Where(criterio)
             .AsNoTracking()
             .ToListAsync();
