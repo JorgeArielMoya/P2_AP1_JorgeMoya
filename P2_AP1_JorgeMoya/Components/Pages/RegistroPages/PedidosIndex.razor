@@ -1,8 +1,10 @@
-﻿@page "/Registro/Index"
+﻿@page "/Pedidos/Index"
+@inject PedidosService pedidosService
+@rendermode InteractiveServer
 
 <div class="container mt-3">
     <div class="card shadow-lg">
-        <div class="card card-header">
+        <div class="card-header">
             <h5 class="card-title text-center"> <strong> Consulta de Registros </strong></h5>
 
             <div class="d-flex justify-content-end">
@@ -60,17 +62,17 @@
 
     public DateTime? Hasta { get; set; } 
 
-    public List<Registros> ListaRegistros = new List<Registros>();
+    public List<Pedidos> ListaPedidos = new List<Pedidos>();
 
     public async Task Buscar ()
     {
-        // var lista = ListaRegistros.listar(r => true);
+        var lista = await pedidosService.Listar(r => true);
 
-        // if (Desde.HasValue && Desde.HasValue)
-        // {
-        //     lista = lista.where(modelo.Fecha >= Desde && modelo.fecha <= Hasta);
-        // }
+        if (Desde.HasValue && Desde.HasValue)
+        {
+            lista = lista.Where(p => p.Fecha >= Desde && p.Fecha <= Hasta).ToList() ;
+        }
 
-        // ListaRegistros = lista;
+        ListaPedidos = lista;
     }
 }

@@ -16,5 +16,5 @@ public class PedidosDetalle
     public virtual Pedidos Pedido { get; set; }
 
     [ForeignKey(nameof(ComponenteId))]
-    public virtual Pedidos Componente { get; set; }
+    public virtual Componentes Componente { get; set; }
 }

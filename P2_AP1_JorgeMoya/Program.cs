@@ -14,7 +14,7 @@ var ConnectionString = builder.Configuration.GetConnectionString("ConStr");
 builder.Services.AddDbContextFactory<Contexto>(o => o.UseSqlite(ConnectionString));
 
 //Inyeccion del service 
-builder.Services.AddScoped<RegistroService>();
+builder.Services.AddScoped<PedidosService>();
 
 var app = builder.Build();
 
