@@ -17,4 +17,14 @@ public class PedidosDetalle
 
     [ForeignKey(nameof(ComponenteId))]
     public virtual Componentes Componente { get; set; }
+
+    public PedidosDetalle() { }
+
+    public PedidosDetalle(int componenteId, int cantidad, decimal precio) 
+    { 
+        ComponenteId = componenteId;
+        Cantidad = cantidad;
+        Precio = precio;    
+    }
+
 }

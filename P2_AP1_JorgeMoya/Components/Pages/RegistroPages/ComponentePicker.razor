@@ -1,0 +1,73 @@
+﻿<div class="row align-items-center">
+    <div class="col-12 col-md-4 mb-3">
+        <label class="col-form-label"> <strong> Componente </strong></label>
+        <InputSelect class="form-select" @bind-Value = "ComponenteId"> 
+            <option value="" selected disabled> Elija una opcion </option>
+            @foreach(var compo in ListaComponentes)
+            {
+                <option value="@compo.ComponenteId"> @compo.ComponenteId- @compo.Descripcion (Existencia: @compo.Existencia) </option>
+            }
+        </InputSelect>
+    </div>
+
+    <div class="col-12 col-md-4 mb-3">
+        <label class="col-form-label"> <strong> Precio </strong></label>
+        <InputNumber class="form-control" @bind-Value = "Precio" />
+    </div>
+
+    <div class="col-12 col-md-4 mb-3">
+        <label class="col-form-label"> <strong> Cantidad  </strong></label>
+        <div class="input-group">
+            <InputNumber class="form-control" @bind-Value="Cantidad" />
+            <button type="button" class="btn btn-success bi bi-plus" @onclick = "TriggerSelection"/>
+        </div>
+    </div>
+</div>
+
+@if(mensajeError != null)
+{
+    <div class="alert alert-danger"> @mensajeError </div>
+}
+
+@code {
+    [Parameter]
+    public int ComponenteId { get; set; }
+
+    [Parameter]
+    public int Cantidad { get; set; }
+
+    [Parameter]
+    public decimal Precio { get; set; }
+
+    [Parameter]
+    public List<Componentes> ListaComponentes { get; set; } = new();
+
+    [Parameter]
+    public EventCallback<(Componentes componente, int cantidad, decimal precio)> OnComponenteSeleccionado { get; set; }
+
+    public string? mensajeError {get;set;}
+
+    public async Task TriggerSelection ()
+    {
+        if (ComponenteId == 0)
+        {
+            mensajeError = "Por favor, seleccione un componente";
+            return;
+        }
+
+        if (Precio <= 0)
+        {
+            mensajeError = "Precio no valido";
+            return;
+        }
+
+        if (Cantidad <= 0)
+        {
+            mensajeError = "Cantidad no valida";
+            return;
+        }
+
+        var compoSeleccionado = ListaComponentes.Single(c => c.ComponenteId == ComponenteId);
+        await OnComponenteSeleccionado.InvokeAsync((compoSeleccionado, Cantidad, Precio));
+    }
+}

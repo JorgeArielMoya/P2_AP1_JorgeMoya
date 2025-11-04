@@ -8,14 +8,11 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace P2_AP1_JorgeMoya.Migrations
 {
     /// <inheritdoc />
-    public partial class Changes : Migration
+    public partial class Inicial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(
-                name: "Registros");
-
             migrationBuilder.CreateTable(
                 name: "Componentes",
                 columns: table => new
@@ -106,18 +103,6 @@ namespace P2_AP1_JorgeMoya.Migrations
 
             migrationBuilder.DropTable(
                 name: "Pedidos");
-
-            migrationBuilder.CreateTable(
-                name: "Registros",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Registros", x => x.Id);
-                });
         }
     }
 }
