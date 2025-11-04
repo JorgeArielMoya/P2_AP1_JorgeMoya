@@ -1,25 +1,171 @@
 ﻿@page "/Pedidos/Create"
+@page "/Pedidos/Create/{PedidoId:int}"
 @inject PedidosService pedidosService
+@inject NavigationManager navigation
 @rendermode InteractiveServer
+
+<PageTitle> @(PedidoId == null || PedidoId == 0? "Create": "Edit")</PageTitle>
 
 <div class="container">
     <div class="card shadow-lg">
         <div class="card-header">
-            <h5 class="card-title text-center"> <strong> Crear registro </strong></h5>
+            <h5 class="card-title text-center"> <strong> @(PedidoId == null || PedidoId == 0 ? "Crear pedido" : "Editar pedido") </strong></h5>
         </div>
 
-        <div class="card-body">
-            <div class="border border-success p-3 mt-3">
+        <EditForm Model="pedido" OnValidSubmit="GuardarPedido">
+            <DataAnnotationsValidator/>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-12 col-md-5 mb-3">
+                        <label class="col-form-label"> <strong> Pedido Id </strong></label>
+                        <InputNumber class="form-control" @bind-Value = "pedido.PedidoId" disabled />
+                    </div>
+
+                    <div class="col-12 col-md-5 mb-3">
+                        <label class="col-form-label"> <strong> Fecha  </strong></label>
+                        <InputDate class="form-control" @bind-Value="pedido.Fecha" />
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-12 col-md-12 mb-3">
+                        <label class="col-form-label"> <strong> Cliente </strong></label>
+                        <InputText class="form-control" @bind-Value = "pedido.NombreCliente"/>
+                        <ValidationMessage For="() => pedido.NombreCliente" />
+                    </div>
+                </div>
+
+                <div class="border border-success p-3 mt-3">
+                    <h5> Detalle del pedido </h5>
+
+                    <ComponentePicker ComponenteId="detalleSeleccionado.ComponenteId"
+                    Cantidad="detalleSeleccionado.Cantidad"
+                    Precio="detalleSeleccionado.Precio"
+                    ListaComponentes="ListaComponentes"
+                    OnComponenteSeleccionado="AgregarDetalle"/>
+
+                    <div class="table-responsive">
+                        <table class="table table-hover table-bordered table-light text-center">
+                            <thead>
+                                <tr>
+                                    <th> Componente Id </th>
+                                    <th> Descripcion </th>
+                                    <th> Precio </th>
+                                    <th> Cantidad </th>
+                                    <th> Importe </th>
+                                    <th> Opciones </th>
+                                </tr>
+                            </thead>
+
+                            @foreach(var detalle in pedido.PedidosDetalles)
+                            {
+                                <tr> 
+                                    <td> @detalle.ComponenteId</td>
+                                    <td> @ListaComponentes.FirstOrDefault(d => d.ComponenteId == detalle.ComponenteId)?.Descripcion</td>
+                                    <td> @detalle.Precio</td>
+                                    <td> @detalle.Cantidad</td>
+                                    <td> @(detalle.Precio * detalle.Cantidad)</td>
+                                    <td> <button type="button" class="btn btn-outline-dark bi bi-trash" @onclick = "() => RemoverDetalle(detalle)"> Remover </button> </td> 
+                                </tr>
+                            }
+                        </table>
+                    </div>
+
+                    <label class="form-label"> <strong> Conteo Registros: </strong> @pedido.PedidosDetalles.Count</label>
+                    <label class="form-label"> <strong> Total obtenido: </strong> @pedido.PedidosDetalles.Sum(d => d.Precio * d.Cantidad).ToString("F2")</label>
+                </div>
             </div>
-        </div>
 
-        <div class="card-footer d-flex justify-content-center bg-white gap-2">
-            <button class="btn btn-primary bi bi-floppy"> Guardar </button>
-            <a href="/Registro/Index" class="btn btn-secondary bi bi-arrow-left"> Regresar </a>
-        </div>
+            <div class="card-footer d-flex justify-content-center bg-white gap-2">
+                <button type="submit" class="btn btn-primary bi bi-floppy"> Guardar </button>
+
+                @if(PedidoId != null && PedidoId != 0)
+                {
+                    <button type="button" class="btn btn-danger bi bi-trash" @onclick = "() => mostrarModal = true"> Eliminar  </button>
+                }
+                <a href="/Pedidos/Index" class="btn btn-secondary bi bi-arrow-left"> Regresar </a>
+            </div>
+        </EditForm>
     </div>
 </div>
 
+@if (mostrarModal)
+{
+    <div class="modal d-block" tabindex="-1" role="dialog" style="background:rgba(0,0,0,0.5)">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title mx-auto"> <strong> Confirmar Eliminacion </strong></h5>
+                </div>
+
+                <div class="modal-body">
+                    <label class="col-12"> <strong> Pedido Id: </strong> @pedido.PedidoId</label>
+                    <label class="col-12"> <strong> Nombre cliente: </strong> @pedido.NombreCliente</label>
+                    <label class="col-12"> <strong> Total importe: </strong> @pedido.PedidosDetalles.Sum(d => d.Cantidad * d.Precio).ToString("F2")</label>
+                    <label class="col-12"> <strong> Fecha: </strong> @pedido.Fecha.ToShortDateString()</label>
+                    <label class="text-danger"> Esta seguro que desea eliminar este pedido? </label>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger bi bi-trash" @onclick="EliminarPedido"> Si, deseo eliminar  </button>
+                    <button type="button" class="btn btn-secondary bi bi-arrow-left" @onclick="() => mostrarModal = false"> Regresar  </button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+}
+
 @code {
+    [Parameter]
+    public int? PedidoId { get; set; }
+
+    public Pedidos pedido { get; set; } = new();
+
+    public bool mostrarModal { get; set; } = false;
+
+    public PedidosDetalle detalleSeleccionado = new();
+
+    public List<Componentes> ListaComponentes = new();
+
+    protected override async Task OnInitializedAsync ()
+    {
+        if (PedidoId != null && PedidoId != 0)
+        {
+            pedido = await pedidosService.Buscar(PedidoId);
+        }
+        ListaComponentes = await pedidosService.ListarComponentes(e => true);
+    }
+
+    public async Task GuardarPedido ()
+    {
+        if (await pedidosService.Guardar(pedido))
+        {
+            navigation.NavigateTo("/Pedidos/Index");
+        }
+    }
+
+    public async Task EliminarPedido()
+    {
+        if (await pedidosService.Eliminar(PedidoId))
+        {
+            navigation.NavigateTo("/Pedidos/Index");
+        }
+    }
+
+    public async Task AgregarDetalle((Componentes componente, int cantidad, decimal precio) selection)
+    {
+        pedido.PedidosDetalles.Add(new PedidosDetalle(selection.componente.ComponenteId, selection.cantidad, selection.precio));
+        detalleSeleccionado = new PedidosDetalle();
+        await Task.CompletedTask;
+    }
+
+    public void RemoverDetalle(PedidosDetalle detalle)
+    {
+        pedido.PedidosDetalles.Remove(detalle);
+        detalleSeleccionado = detalle;
+    }
+
 
 }
