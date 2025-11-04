@@ -1,6 +1,9 @@
 ﻿@page "/Pedidos/Index"
 @inject PedidosService pedidosService
+@inject NavigationManager navigationManager
 @rendermode InteractiveServer
+
+<PageTitle> Index </PageTitle>
 
 <div class="container mt-3">
     <div class="card shadow-lg">
@@ -8,7 +11,7 @@
             <h5 class="card-title text-center"> <strong> Consulta de Registros </strong></h5>
 
             <div class="d-flex justify-content-end">
-                <a class="btn btn-primary bi bi-plus-square" href="/Registro/Create"> Crear Registro</a>
+                <a class="btn btn-primary bi bi-plus-square" href="/Pedidos/Create"> Crear Registro</a>
             </div>
         </div>
 
@@ -27,32 +30,59 @@
 
             <div class="row align-items-center">
                 <div class="col-12 col-md-6 mb-3">
+                    <label class="form-label"> <strong> Filtrar por: </strong></label>
+                    <InputSelect @bind-Value = "filtro" class="form-select"> 
+                        <option value="" selected disabled> Elija una opcion </option>
+                        <option value="PedidoId"> Pedido Id </option>
+                        <option value="NombreCliente"> Nombre cliente  </option>
+                    </InputSelect>
+                </div>
+
+                <div class="col-12 col-md-6 mb-3">
                     <label class="form-label"> <strong> Busqueda: </strong></label>
                     <div class="input-group">
-                        <input class="form-control"/>
-                        <button type="button" class="btn btn-outline-info bi bi-search"> </button>
+                        <input class="form-control" @bind = "valorFiltro"/>
+                        <button type="button" class="btn btn-outline-info bi bi-search" @onclick = "Buscar" > Buscar </button>
                     </div>
                 </div>
             </div>
 
             <div class="table-responsive">
-                <table class="table table-hover table-striped"> 
+                <table class="table table-hover table-striped text-center"> 
                     <thead>
                         <tr>
-                            <th> ID </th>
+                            <th> Pedido ID </th>
+                            <th> Nombre cliente  </th>
+                            <th> Total </th>
                             <th> Fecha </th>
                             <th> Opciones </th>
                         </tr>
                     </thead>
 
-                    <tr>
-                        <td> Id </td>
-                        <td> Fecha </td>
-                        <td> <a class="btn btn-outline-info bi bi-pencil-square"> </a></td>
-                    </tr>
+                    @if(ListaPedidos.Count == 0)
+                    {
+                        <tr>
+                            <td colspan="5"> No se han encontrado pedido </td>
+                        </tr>
+                    }
 
+                    @foreach(var pedido in ListaPedidos)
+                    {
+                        <tr>
+                            <td> @pedido.PedidoId</td>
+                            <td> @pedido.NombreCliente</td>
+                            <td> @pedido.PedidosDetalles.Sum(d => d.Cantidad * d.Precio).ToString("F2")</td>
+                            <td> @pedido.Fecha.ToShortDateString()</td>
+                            <td> <a href="/Pedidos/Create/@pedido.PedidoId" class="btn btn-outline-dark bi bi-pencil-square"/></td>
+                        </tr>
+                    }
                 </table>
             </div>
+        </div>
+
+        <div class="card-footer">
+            <label class="col-form-label"> <strong> Conteo Registro: </strong> @ListaPedidos.Count</label>
+            <label class="ms-5 col-form-label"> <strong> Conteo Registro: </strong> @ListaPedidos.Sum(a => a.PedidosDetalles.Sum(d => d.Precio * d.Cantidad)).ToString("F2")</label>
         </div>
     </div>
 </div>
@@ -60,9 +90,18 @@
 @code {
     public DateTime? Desde { get; set; } 
 
-    public DateTime? Hasta { get; set; } 
+    public DateTime? Hasta { get; set; }
+
+    public string filtro { get; set; } = null!;
+
+    public string valorFiltro { get; set; } = string.Empty;
 
     public List<Pedidos> ListaPedidos = new List<Pedidos>();
+
+    protected override async Task OnInitializedAsync ()
+    {
+        await Buscar();
+    }
 
     public async Task Buscar ()
     {
@@ -71,6 +110,19 @@
         if (Desde.HasValue && Desde.HasValue)
         {
             lista = lista.Where(p => p.Fecha >= Desde && p.Fecha <= Hasta).ToList() ;
+        }
+
+        if (!string.IsNullOrEmpty(valorFiltro))
+        {
+            if (filtro == nameof(Pedidos.PedidoId) && int.TryParse(valorFiltro, out int id))
+            {
+                lista = lista.Where(p => p.PedidoId == id).ToList();
+            }
+
+            else if (filtro == nameof(Pedidos.NombreCliente))
+            {
+                lista = lista.Where(p => p.NombreCliente.Contains(valorFiltro,StringComparison.OrdinalIgnoreCase)).ToList();
+            }
         }
 
         ListaPedidos = lista;
