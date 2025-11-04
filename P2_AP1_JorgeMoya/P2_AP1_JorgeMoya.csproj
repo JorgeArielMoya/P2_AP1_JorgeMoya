@@ -19,10 +19,4 @@
     <Folder Include="Data\" />
   </ItemGroup>
 
-  <ItemGroup>
-    <None Update="Data\Parcial2.db">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-
 </Project>
