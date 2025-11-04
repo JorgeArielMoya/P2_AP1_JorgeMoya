@@ -73,7 +73,7 @@
                             <td> @pedido.NombreCliente</td>
                             <td> @pedido.PedidosDetalles.Sum(d => d.Cantidad * d.Precio).ToString("F2")</td>
                             <td> @pedido.Fecha.ToShortDateString()</td>
-                            <td> <a href="/Pedidos/Create/@pedido.PedidoId" class="btn btn-outline-dark bi bi-pencil-square"/></td>
+                            <td> <a href="/Pedidos/Create/@pedido.PedidoId" class="btn btn-outline-info bi bi-pencil-square"/></td>
                         </tr>
                     }
                 </table>
