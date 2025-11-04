@@ -76,7 +76,7 @@ public class PedidosService (IDbContextFactory<Contexto> Dbfactory)
         return await contexto.SaveChangesAsync() > 0;
     }
 
-    public async Task<bool> Eliminar (int pedidoId)
+    public async Task<bool> Eliminar (int? pedidoId)
     {
         await using var contexto = await Dbfactory.CreateDbContextAsync();
 
@@ -124,7 +124,6 @@ public class PedidosService (IDbContextFactory<Contexto> Dbfactory)
             .Where(criterio)
             .AsNoTracking()
             .ToListAsync();
-
     }
 
 
