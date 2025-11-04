@@ -82,7 +82,7 @@
 
         <div class="card-footer">
             <label class="col-form-label"> <strong> Conteo Registro: </strong> @ListaPedidos.Count</label>
-            <label class="ms-5 col-form-label"> <strong> Conteo Registro: </strong> @ListaPedidos.Sum(a => a.PedidosDetalles.Sum(d => d.Precio * d.Cantidad)).ToString("F2")</label>
+            <label class="ms-5 col-form-label"> <strong> Total obtenido: </strong> @ListaPedidos.Sum(a => a.PedidosDetalles.Sum(d => d.Precio * d.Cantidad)).ToString("F2")</label>
         </div>
     </div>
 </div>
