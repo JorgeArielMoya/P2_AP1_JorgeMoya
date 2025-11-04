@@ -20,6 +20,11 @@ public class PedidosDetalle
 
     public PedidosDetalle() { }
 
-    public PedidosDetalle(int componenteId, int cantidad, decimal precio) { }
+    public PedidosDetalle(int componenteId, int cantidad, decimal precio) 
+    { 
+        ComponenteId = componenteId;
+        Cantidad = cantidad;
+        Precio = precio;    
+    }
 
 }
