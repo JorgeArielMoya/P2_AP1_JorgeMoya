@@ -126,7 +126,6 @@ public class PedidosService (IDbContextFactory<Contexto> Dbfactory)
             .ToListAsync();
     }
 
-
     private enum TipoOperacion
     {
         Suma = 1,
